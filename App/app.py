@@ -1,7 +1,7 @@
 import streamlit as st
 
 # -------- constants --------
-G = 9.81
+g = 9.81
 mean_density = 850
 mpa_to_pa = 1_000_000
 # ---------------------------
