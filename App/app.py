@@ -1,9 +1,26 @@
 import streamlit as st
 
 # Заголовок приложения
-st.title("Dynamic Fluid Level Calculator")
+st.title("Well Engineering Calculator")
 
-st.write("Calculation of dynamic level")
+# создаём вкладки
+tab1, tab2, tab3 = st.tabs([
+    "Dynamic Level",
+    "Dupuit Flow",
+    "Productivity Index"
+])
+
+# содержимое первой вкладки
+with tab1:
+    st.header("Dynamic Level Calculation")
+
+# содержимое второй вкладки
+with tab2:
+    st.header("Dupuit Flow")
+
+# содержимое третьей вкладки
+with tab3:
+    st.header("Productivity Index")
 
 # ---- Ввод параметров ----
 
