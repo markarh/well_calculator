@@ -34,14 +34,14 @@ with tab1:
     with col1:
         st.subheader("Inputs")
 
-        H = st.number_input("ESP depth (m)", value=2500.0)
+        H = st.number_input("Длина подвески / ESP depth (m)", value=2500.0)
 
-        P_wellhead = st.number_input(
-            "Wellhead pressure (MPa)", value=10.0
+        P_head = st.number_input(
+            "Устьевое давление / Head pressure (MPa)", value=10.0
         )
 
         P_annulus = st.number_input(
-            "Annulus pressure (MPa)", value=0.2
+            "Затрубное давление / Annulus pressure (MPa)", value=10
         )
 
         calculate = st.button("Calculate dynamic level", key="calc_dyn")
@@ -49,19 +49,22 @@ with tab1:
     # ---- Расчёт ----
 
     with col2:
+
         st.subheader("Results")
 
         if calculate:
 
-            if P_annulus >= P_wellhead:
+            P_head_pa = P_head * mpa_to_pa                                                                              # Перевод в Па
+            P_annulus_pa = P_annulus * mpa_to_pa
+
+            P_wellhead_pa = mean_density * g * H + P_head_pa                                                            # Нахождение забойного давления с учетом устьевого (Необходима проверка)
+
+            if P_annulus >= P_wellhead_pa:                                                                              # Проверка, чтобы затрубное давление не оказалось больше, чем забойное
                 st.warning("Annulus pressure must be lower than wellhead pressure")
                 st.stop()
 
-            P_wellhead_pa = P_wellhead * mpa_to_pa
-            P_annulus_pa = P_annulus * mpa_to_pa
-
-            h = (P_wellhead_pa - P_annulus_pa) / (mean_density * g)
-            H_dyn = H - h
+            h = (P_wellhead_pa - P_annulus_pa) / (mean_density * g)                                                     # Формула нахождения гидростатического уровня
+            H_dyn = H - h                                                                                               # Формула нахождения динамического уровня
 
             st.metric("Fluid column height (m)", f"{h:.2f}")
             st.metric("Dynamic level (m)", f"{H_dyn:.2f}")
