@@ -66,8 +66,8 @@ with tab1:
             h = (P_wellhead_pa - P_annulus_pa) / (mean_density * g)                                                     # Формула нахождения гидростатического уровня
             H_dyn = H - h                                                                                               # Формула нахождения динамического уровня
 
-            st.metric("Fluid column height (m)", f"{h:.2f}")
-            st.metric("Dynamic level (m)", f"{H_dyn:.2f}")
+            st.metric("Уровень водяного столба / Fluid column height (m)", f"{h:.2f}")
+            st.metric(" Динамический уровень / Dynamic level (m)", f"{H_dyn:.2f}")
 
 
 
