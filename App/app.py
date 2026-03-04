@@ -1,7 +1,17 @@
 import streamlit as st
 
+# -------- constants --------
+G = 9.81
+mean_density = 850
+mpa_to_pa = 1_000_000
+# ---------------------------
+
 # настройка страницы
-st.set_page_config(layout="wide")
+st.set_page_config(
+    page_title="Well Calculator",
+    page_icon="🛢️",
+    layout="centered"
+)
 
 # Заголовок приложения
 st.title("Well Engineering Calculator")
@@ -18,43 +28,76 @@ with tab1:
     st.header("Dynamic Level Calculation")
     # ---- Ввод параметров ----
 
-    H = st.number_input("Well depth H (m)", value=2500.0)
+    H = st.number_input("ESP depth (m)", value=2500.0)
 
-    P_ann = st.number_input(
-        "Annulus pressure P_ann (MPa)", value=3.0
+    P_wellhead = st.number_input(
+        "Wellhead pressure (MPa)", value=10.0
     )
 
-    P_g = st.number_input(
-        "Gas pressure P_g (MPa)", value=0.2
+    P_annulus = st.number_input(
+        "Annulus pressure (MPa)", value=0.2
     )
 
-    rho = st.number_input(
-        "Fluid density (kg/m³)", value=850.0
-    )
+
 
     # ---- Константа ----
 
-    g = 9.81
 
     # ---- Расчёт ----
 
-    if st.button("Calculate dynamic level"):
+    if st.button("Calculate dynamic level", key="calc_dyn"):
+
+        result_box = st.container()
+
+        if P_annulus >= P_wellhead:
+            st.warning("Annulus pressure must be lower than wellhead pressure")
+            st.stop()
 
         # перевод MPa → Pa
-        P_ann_pa = P_ann * 1_000_000
-        P_g_pa = P_g * 1_000_000
+        P_wellhead_pa = P_wellhead * mpa_to_pa
+        P_annulus_pa = P_annulus * mpa_to_pa
 
         # высота жидкостного столба
-        h = (P_ann_pa - P_g_pa) / (rho * g)
+        h = (P_wellhead_pa - P_annulus_pa) / (mean_density * g)
 
         # динамический уровень
         H_dyn = H - h
 
-        st.subheader("Results")
+        with result_box:
+            st.subheader("Results")
+            st.write(f"Fluid column height: {h:.2f} m")
+            st.write(f"Dynamic level: {H_dyn:.2f} m")
 
-        st.write(f"Fluid column height: {h:.2f} m")
 
-        st.write(f"Dynamic level: {H_dyn:.2f} m")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 # содержимое второй вкладки
