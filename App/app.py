@@ -26,47 +26,45 @@ tab1, tab2, tab3 = st.tabs([
 # содержимое первой вкладки
 with tab1:
     st.header("Dynamic Level Calculation")
+
+    col1, col2 = st.columns(2)
+
     # ---- Ввод параметров ----
 
-    H = st.number_input("ESP depth (m)", value=2500.0)
+    with col1:
+        st.subheader("Inputs")
 
-    P_wellhead = st.number_input(
-        "Wellhead pressure (MPa)", value=10.0
-    )
+        H = st.number_input("ESP depth (m)", value=2500.0)
 
-    P_annulus = st.number_input(
-        "Annulus pressure (MPa)", value=0.2
-    )
+        P_wellhead = st.number_input(
+            "Wellhead pressure (MPa)", value=10.0
+        )
 
+        P_annulus = st.number_input(
+            "Annulus pressure (MPa)", value=0.2
+        )
 
-
-    # ---- Константа ----
-
+        calculate = st.button("Calculate dynamic level", key="calc_dyn")
 
     # ---- Расчёт ----
 
-    if st.button("Calculate dynamic level", key="calc_dyn"):
+    with col2:
+        st.subheader("Results")
 
-        result_box = st.container()
+        if calculate:
 
-        if P_annulus >= P_wellhead:
-            st.warning("Annulus pressure must be lower than wellhead pressure")
-            st.stop()
+            if P_annulus >= P_wellhead:
+                st.warning("Annulus pressure must be lower than wellhead pressure")
+                st.stop()
 
-        # перевод MPa → Pa
-        P_wellhead_pa = P_wellhead * mpa_to_pa
-        P_annulus_pa = P_annulus * mpa_to_pa
+            P_wellhead_pa = P_wellhead * mpa_to_pa
+            P_annulus_pa = P_annulus * mpa_to_pa
 
-        # высота жидкостного столба
-        h = (P_wellhead_pa - P_annulus_pa) / (mean_density * g)
+            h = (P_wellhead_pa - P_annulus_pa) / (mean_density * g)
+            H_dyn = H - h
 
-        # динамический уровень
-        H_dyn = H - h
-
-        with result_box:
-            st.subheader("Results")
-            st.write(f"Fluid column height: {h:.2f} m")
-            st.write(f"Dynamic level: {H_dyn:.2f} m")
+            st.metric("Fluid column height (m)", f"{h:.2f}")
+            st.metric("Dynamic level (m)", f"{H_dyn:.2f}")
 
 
 
