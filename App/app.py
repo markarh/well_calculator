@@ -68,14 +68,14 @@ with tab1:
 
             P_wellhead_pa = mean_density * g * H + P_head_pa                                                            # Нахождение забойного давления с учетом устьевого (Необходима проверка)
 
-            if P_annulus_pa >= P_wellhead_pa:                                                                              # Проверка, чтобы затрубное давление не оказалось больше, чем забойное
+            if P_annulus_pa >= P_wellhead_pa:                                                                           # Проверка, чтобы затрубное давление не оказалось больше, чем забойное
                 st.warning("Annulus pressure must be lower than wellhead pressure")
                 st.stop()
 
             h = (P_wellhead_pa - P_annulus_pa) / (mean_density * g)                                                     # Формула нахождения гидростатического уровня
             H_dyn = H - h                                                                                               # Формула нахождения динамического уровня
 
-            st.metric("Уровень водяного столба / Fluid column height (m)", f"{h:.2f}")
+            st.metric("Высота столба жидкости / Fluid column height (m)", f"{h:.2f}")
             st.metric(" Динамический уровень / Dynamic level (m)", f"{H_dyn:.2f}")
 
 
@@ -122,7 +122,7 @@ with tab2:
                 st.stop()
 
 
-            t_flow = H_static * B_nkt / Q_esp * 1440
+            t_flow = H_static * B_nkt / Q_esp
 
             st.metric("Время появления подачи на устье (min)", f"{t_flow:.2f}")
             st.caption("t = H_static × B_nkt / Q_esp × 1440")
