@@ -19,7 +19,7 @@ st.title("Well Engineering Calculator")
 # создаём вкладки
 tab1, tab2, tab3 = st.tabs([
     "Dynamic Level",
-    "Dupuit Flow",
+    "Время подачи",
     "Productivity Index"
 ])
 
@@ -72,38 +72,75 @@ with tab1:
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 # содержимое второй вкладки
 with tab2:
-    st.header("Dupuit Flow")
+    st.header("Время подачи")
+
+    col1, col2 = st.columns(2)
+
+    with col1:
+        st.subheader("Inputs")
+
+        H_static = st.number_input("Статический уровень / Static level (m)", value=1500.0)
+
+        # выбор диаметра НКТ
+        Q_nkt = st.selectbox(
+            "Nominal tubing diameter / Номинальный диаметр НКТ (mm)",
+            [60, 73, 89]
+        )
+
+        Q_esp = st.number_input(
+            "Производительность насоса  / ESP performance (m3/day)", value=10
+        )
+
+        calculate = st.button("Calculate dynamic level", key="calc_dyn")
+        # таблица коэффициентов
+        B_table = {
+            60: 2.8,
+            73: 4.4,
+            89: 6.5
+        }
+
+        # получение коэффициента
+        B_nkt = B_table[Q_nkt]
+
+        st.write("Coefficient B_nkt:", B_nkt)
+
+        t_flow = H_static * B_nkt / Q_esp
+
+        st.metric("Время появления подачи на устье (min)", f"{t_flow:.2f}")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 # содержимое третьей вкладки
 with tab3:
