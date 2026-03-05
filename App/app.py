@@ -25,9 +25,9 @@ st.title("Well Engineering Calculator")
 
 # создаём вкладки
 tab1, tab2, tab3 = st.tabs([
-    "Dynamic Level",
+    "Динамический уровень",
     "Время подачи",
-    "Productivity Index"
+    "Скорость притока к скважине"
 ])
 
 # содержимое первой вкладки
@@ -45,8 +45,8 @@ with tab1:
             "Длина подвески / ESP depth (m)", value=2500.0, step=0.1, format="%.2f", min_value=0.0
         )
 
-        P_head = st.number_input(
-            "Устьевое давление / Head pressure (MPa)", value=10.0, step=0.1, format="%.2f", min_value=0.0
+        P_inlet = st.number_input(
+            "Давление на приёме насоса / Inlet pressure (MPa)", value=10.0, step=0.1, format="%.2f", min_value=0.0
         )
 
         P_annulus = st.number_input(
@@ -63,16 +63,14 @@ with tab1:
 
         if calculate:
 
-            P_head_pa = P_head * mpa_to_pa                                                                              # Перевод в Па
+            P_inlet_pa = P_inlet * mpa_to_pa                                                                            # Перевод в Па
             P_annulus_pa = P_annulus * mpa_to_pa
-
-            P_wellhead_pa = mean_density * g * H + P_head_pa                                                            # Нахождение забойного давления с учетом устьевого (Необходима проверка)
-
-            if P_annulus_pa >= P_wellhead_pa:                                                                           # Проверка, чтобы затрубное давление не оказалось больше, чем забойное
+                                                                                                                        # Необходимо рассмотреть случаи, когда P_annulus >= P_inlet
+            if P_annulus_pa >= P_inlet_pa:                                                                              # Проверка, чтобы затрубное давление не оказалось больше, чем на приёме насоса
                 st.warning("Annulus pressure must be lower than wellhead pressure")
                 st.stop()
 
-            h = (P_wellhead_pa - P_annulus_pa) / (mean_density * g)                                                     # Формула нахождения гидростатического уровня
+            h = (P_inlet_pa - P_annulus_pa) / (mean_density * g)                                                     # Формула нахождения гидростатического уровня
             H_dyn = H - h                                                                                               # Формула нахождения динамического уровня
 
             st.metric("Высота столба жидкости / Fluid column height (m)", f"{h:.2f}")
@@ -129,37 +127,24 @@ with tab2:
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 # содержимое третьей вкладки
 with tab3:
-    st.header("Productivity Index")
+    st.header("Определение притока из пласта / Inflow rate")
+
+    col1, col2 = st.columns(2)
+
+    with col1:
+        st.subheader("Inputs")
+
+        Q_agzu = st.number_input(
+            'дебит скважины замеренный по АГЗУ за время T (m3/day)', value=100.0, step=0.1, format="%.2f", min_value=0.0
+        )
+        H_dyn1 = st.number_input(
+            'Начальный динамический уровень в скважине при определении притока (m)', value=1000.0, step=0.1, format="%.2f", min_value=0.0         #
+        )
+        H_dyn2 = st.number_input(
+            'Конечный динамический уровень в скважине за время T (m)', value=1000.0, step=0.1, format="%.2f", min_value=0.0
+        )
+
+
 
