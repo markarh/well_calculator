@@ -50,7 +50,7 @@ with tab1:
         )
 
         P_annulus = st.number_input(
-            "Затрубное давление / Annulus pressure (MPa)", value=10, step=0.1, format="%.2f", min_value=0.0
+            "Затрубное давление / Annulus pressure (MPa)", value=10.0, step=0.1, format="%.2f", min_value=0.0
         )
 
         calculate = st.button("Calculate dynamic level", key="calc_dyn")
@@ -101,7 +101,7 @@ with tab2:
         )
 
         Q_esp = st.number_input(
-            "Производительность насоса  / ESP performance (m3/day)", value=10, step=0.1, format="%.2f", min_value=0.0
+            "Производительность насоса  / ESP performance (m3/day)", value=10.0, step=0.1, format="%.2f", min_value=0.0
         )
 
         calculate_flow = st.button("Calculate flow time", key="calc_flow")
